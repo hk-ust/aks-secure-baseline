@@ -251,7 +251,16 @@ spec:
             memory: 256Mi
       nodeSelector:
         kubernetes.io/os: linux
-        agentpool: npuser01
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: agentpool
+                operator: In
+                values:
+                - npuser01
+                - npuser02
 ---
 apiVersion: apps/v1
 kind: Deployment
