@@ -325,7 +325,16 @@ spec:
           path: /etc/kubernetes/azure.json
       nodeSelector:
         kubernetes.io/os: linux
-        agentpool: npuser01
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: agentpool
+                operator: In
+                values:
+                - npuser01
+                - npuser02
 ---
 apiVersion: aadpodidentity.k8s.io/v1
 kind: AzurePodIdentityException
