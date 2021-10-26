@@ -12,8 +12,7 @@ TENANT_ID=$5
 MAIN_SUBSCRIPTION=$6
 
 AKS_ADMIN_NAME=aksadminuser
-AKS_ENDUSER_NAME=aksuser
-AKS_ENDUSER_PASSWORD=ChangeMebu0001a0008AdminChangeMe
+AKS_ADMIN_PASSWORD=ChangeMebu0001a0008AdminChangeMe
 
 K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME="add-to-bu0001a000800-cluster-admin"
 
@@ -59,12 +58,19 @@ az login  --allow-no-subscriptions -t $TENANT_ID
 
 K8S_RBAC_AAD_PROFILE_TENANT_DOMAIN_NAME=$(az ad signed-in-user show --query 'userPrincipalName' -o tsv | cut -d '@' -f 2 | sed 's/\"//')
 AKS_ADMIN_NAME=${AKS_ADMIN_NAME}'@'${K8S_RBAC_AAD_PROFILE_TENANT_DOMAIN_NAME}
-AKS_ENDUSER_NAME=${AKS_ENDUSER_NAME}'@'${K8S_RBAC_AAD_PROFILE_TENANT_DOMAIN_NAME}
 
 #--Create identities needed for AKS-AAD integration
-AKS_ADMIN_OBJECTID=$(az ad user create --display-name $AKS_ADMIN_NAME --user-principal-name $AKS_ADMIN_NAME --force-change-password-next-login  --password $AKS_ENDUSER_PASSWORD --query objectId -o tsv)
-K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID=$(az ad group create --display-name ${K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME} --mail-nickname ${K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME} --query objectId -o tsv)
-az ad group member add --group $K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME --member-id $AKS_ADMIN_OBJECTID
+AKS_ADMIN_OBJECTID=$(az ad user show --id $AKS_ADMIN_NAME --query objectId -o tsv 2>/dev/null)
+if [ -z ${AKS_ADMIN_OBJECTID} ]; then
+    AKS_ADMIN_OBJECTID=$(az ad user create --display-name $AKS_ADMIN_NAME --user-principal-name $AKS_ADMIN_NAME --force-change-password-next-login --password $AKS_ADMIN_PASSWORD --query objectId -o tsv)
+fi
+K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID=$(az ad group show --group ${K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME} --query objectId -o tsv 2>/dev/null)
+if [ -z ${K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID} ]; then
+    K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID=$(az ad group create --display-name ${K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME} --mail-nickname ${K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME} --query objectId -o tsv)
+fi
+if [ $(az ad group member check --group $K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME --member-id $AKS_ADMIN_OBJECTID --query value -o tsv) = 'false' ]; then
+    az ad group member add --group $K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME --member-id $AKS_ADMIN_OBJECTID
+fi
 K8S_RBAC_AAD_PROFILE_TENANTID=$(az account show --query tenantId -o tsv)
 
 echo ""
@@ -72,7 +78,7 @@ echo "# Deploying networking"
 echo ""
 
 #back to main subscription
-az login
+#az login
 az account set -s $MAIN_SUBSCRIPTION
 
 #Main Network.Build the hub. First arm template execution and catching outputs. This might take about 6 minutes
@@ -111,10 +117,11 @@ cat << EOF
 NEXT STEPS
 ---- -----
 
-./1-cluster-stamp.sh $LOCATION $RGNAMECLUSTER $RGNAMESPOKES $TENANT_ID $MAIN_SUBSCRIPTION $TARGET_VNET_RESOURCE_ID $K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID $K8S_RBAC_AAD_PROFILE_TENANTID $AKS_ENDUSER_NAME $AKS_ENDUSER_PASSWORD
+./1-cluster-stamp.sh $LOCATION $RGNAMECLUSTER $RGNAMESPOKES $TENANT_ID $MAIN_SUBSCRIPTION $TARGET_VNET_RESOURCE_ID $K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID $K8S_RBAC_AAD_PROFILE_TENANTID
 
 EOF
 
+./1-cluster-stamp.sh $LOCATION $RGNAMECLUSTER $RGNAMESPOKES $TENANT_ID $MAIN_SUBSCRIPTION $TARGET_VNET_RESOURCE_ID $K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID $K8S_RBAC_AAD_PROFILE_TENANTID
 
 
 

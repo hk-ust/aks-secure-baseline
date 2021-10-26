@@ -12,16 +12,14 @@ MAIN_SUBSCRIPTION=$5
 TARGET_VNET_RESOURCE_ID=$6
 K8S_RBAC_AAD_ADMIN_GROUP_OBJECTID=$7
 K8S_RBAC_AAD_PROFILE_TENANTID=$8
-AKS_ENDUSER_NAME=$9
-AKS_ENDUSER_PASSWORD=${10}
 
 # Used for services that support native geo-redundancy (Azure Container Registry)
 # Ideally should be the paired region of $LOCATION
-GEOREDUNDANCY_LOCATION=centralus
+GEOREDUNDANCY_LOCATION=southeastasia
 
 APPGW_APP_URL=bicycle.contoso.com
 
-az login
+#az login
 az account set -s $MAIN_SUBSCRIPTION
 
 echo ""
@@ -52,6 +50,7 @@ az deployment group create --resource-group "${RGNAMECLUSTER}" --template-file "
                geoRedundancyLocation=$GEOREDUNDANCY_LOCATION \
                targetVnetResourceId=$TARGET_VNET_RESOURCE_ID \
                clusterAdminAadGroupObjectId=$K8S_RBAC_AAD_ADMIN_GROUP_OBJECTID \
+               a0008NamespaceReaderAadGroupObjectId=16367b5d-2f30-4d93-9c63-16adbf7e7010 \
                k8sControlPlaneAuthorizationTenantId=$K8S_RBAC_AAD_PROFILE_TENANTID \
                appGatewayListenerCertificate=$APP_GATEWAY_LISTENER_CERTIFICATE \
                aksIngressControllerCertificate=$AKS_INGRESS_CONTROLLER_CERTIFICATE_BASE64
@@ -67,7 +66,7 @@ az keyvault set-policy --certificate-permissions import get -n $KEYVAULT_NAME --
 cat traefik-ingress-internal-aks-ingress-tls.crt traefik-ingress-internal-aks-ingress-tls.key > traefik-ingress-internal-aks-ingress-tls.pem
 az keyvault certificate import --vault-name $KEYVAULT_NAME -f traefik-ingress-internal-aks-ingress-tls.pem -n traefik-ingress-internal-aks-ingress-tls
 
-az aks get-credentials -n ${AKS_CLUSTER_NAME} -g ${RGNAMECLUSTER} --admin
+az aks get-credentials -n ${AKS_CLUSTER_NAME} -g ${RGNAMECLUSTER} --admin --overwrite-existing
 kubectl create namespace cluster-baseline-settings
 kubectl apply -f ../../cluster-manifests/cluster-baseline-settings/flux.yaml
 kubectl wait --namespace cluster-baseline-settings --for=condition=ready pod --selector=app.kubernetes.io/name=flux --timeout=90s
