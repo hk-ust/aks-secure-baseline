@@ -30,7 +30,8 @@ echo ""
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -out appgw.crt \
         -keyout appgw.key \
-        -subj "/CN=bicycle.contoso.com/O=Contoso Bicycle"
+        -subj "/CN=bicycle.contoso.com/O=Contoso Bicycle" \
+        -addext "subjectAltName = DNS:bicycle.contoso.com" -addext "keyUsage = digitalSignature"  -addext "extendedKeyUsage = serverAuth"
 openssl pkcs12 -export -out appgw.pfx -in appgw.crt -inkey appgw.key -passout pass:
 APP_GATEWAY_LISTENER_CERTIFICATE=$(cat appgw.pfx | base64 | tr -d '\n')
 
@@ -50,7 +51,7 @@ az deployment group create --resource-group "${RGNAMECLUSTER}" --template-file "
                geoRedundancyLocation=$GEOREDUNDANCY_LOCATION \
                targetVnetResourceId=$TARGET_VNET_RESOURCE_ID \
                clusterAdminAadGroupObjectId=$K8S_RBAC_AAD_ADMIN_GROUP_OBJECTID \
-               a0008NamespaceReaderAadGroupObjectId=16367b5d-2f30-4d93-9c63-16adbf7e7010 \
+               a0008NamespaceReaderAadGroupObjectId=19882f96-1b53-40cf-bdec-2ace960cfe4e \
                k8sControlPlaneAuthorizationTenantId=$K8S_RBAC_AAD_PROFILE_TENANTID \
                appGatewayListenerCertificate=$APP_GATEWAY_LISTENER_CERTIFICATE \
                aksIngressControllerCertificate=$AKS_INGRESS_CONTROLLER_CERTIFICATE_BASE64
@@ -139,7 +140,7 @@ kubectl wait --namespace a0008 \
   --for=condition=ready pod \
   --selector=app.kubernetes.io/name=aspnetapp \
   --timeout=90s
-echo 'you must see the EXTERNAL-IP 10.240.4.4, please wait till it is ready. It takes a some minutes, then cntr+c'
+echo 'you must see the EXTERNAL-IP 10.26.20.4, please wait till it is ready. It takes a some minutes, then cntr+c'
 kubectl get svc -n traefik --watch  -n a0008
 
 rm appgw.crt appgw.key appgw.pfx

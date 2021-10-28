@@ -439,7 +439,7 @@
                         "ttl": 3600,
                         "aRecords": [
                             {
-                                "ipv4Address": "10.240.4.4"
+                                "ipv4Address": "10.26.20.4"
                             }
                         ]
                     }
@@ -1103,7 +1103,7 @@
                         "scaleSetEvictionPolicy": "Delete",
                         "orchestratorVersion": "[parameters('kubernetesVersion')]",
                         "enableNodePublicIP": false,
-                        "maxPods": 30,
+                        "maxPods": 50,
                         "upgradeSettings": {
                             "maxSurge": "33%"
                         }

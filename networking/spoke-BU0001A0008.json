@@ -251,14 +251,14 @@
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "10.240.0.0/16"
+                        "10.26.16.0/20"
                     ]
                 },
                 "subnets": [
                     {
                         "name": "snet-clusternodes",
                         "properties": {
-                            "addressPrefix": "10.240.0.0/22",
+                            "addressPrefix": "10.26.16.0/22",
                             "routeTable": {
                                 "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
                             },
@@ -272,7 +272,7 @@
                     {
                         "name": "snet-clusteringressservices",
                         "properties": {
-                            "addressPrefix": "10.240.4.0/28",
+                            "addressPrefix": "10.26.20.0/28",
                             "routeTable": {
                                 "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
                             },
@@ -286,7 +286,7 @@
                     {
                         "name": "snet-applicationgateway",
                         "properties": {
-                            "addressPrefix": "10.240.4.16/28",
+                            "addressPrefix": "10.26.20.16/28",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('nsg-', variables('clusterVNetName'), '-appgw'))]"
                             },

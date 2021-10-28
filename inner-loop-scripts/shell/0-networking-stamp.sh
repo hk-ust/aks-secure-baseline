@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -x
 
 # This script might take about 20 minutes
 # Please check the variables
@@ -11,10 +11,10 @@ RGNAMECLUSTER=$4
 TENANT_ID=$5
 MAIN_SUBSCRIPTION=$6
 
-AKS_ADMIN_NAME=aksadminuser
+AKS_ADMIN_NAME=bu0001a000800-admin
 AKS_ADMIN_PASSWORD=ChangeMebu0001a0008AdminChangeMe
 
-K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME="add-to-bu0001a000800-cluster-admin"
+K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME="cluster-admins-bu0001a000800"
 
 __usage="
     [-c RGNAMECLUSTER]
