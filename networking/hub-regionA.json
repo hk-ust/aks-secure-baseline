@@ -26,7 +26,6 @@
                 "uksouth",
                 "westeurope",
                 "japaneast",
-                "eastasia",
                 "southeastasia"
             ],
             "metadata": {
@@ -704,6 +703,11 @@
             "name": "[variables('hubFwName')]",
             "location": "[parameters('location')]",
             "comments": "This is the regional Azure Firewall that all regional spoke networks can egress through.",
+            "zones": [
+                "1",
+                "2",
+                "3"
+            ],
             "dependsOn": [
                 "create-fw-pips",
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('hubVnetName'))]",

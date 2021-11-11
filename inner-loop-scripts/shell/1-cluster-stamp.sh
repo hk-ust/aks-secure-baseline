@@ -15,7 +15,7 @@ K8S_RBAC_AAD_PROFILE_TENANTID=$8
 
 # Used for services that support native geo-redundancy (Azure Container Registry)
 # Ideally should be the paired region of $LOCATION
-GEOREDUNDANCY_LOCATION=southeastasia
+GEOREDUNDANCY_LOCATION=eastasia
 
 APPGW_APP_URL=bicycle.contoso.com
 
@@ -67,11 +67,19 @@ CURRENT_IP_ADDRESS=$(curl -s https://ifconfig.io)
 az keyvault network-rule add -n $KEYVAULT_NAME --ip-address ${CURRENT_IP_ADDRESS}
 
 cat traefik-ingress-internal-aks-ingress-tls.crt traefik-ingress-internal-aks-ingress-tls.key > traefik-ingress-internal-aks-ingress-tls.pem
-az keyvault certificate import --vault-name $KEYVAULT_NAME -f traefik-ingress-internal-aks-ingress-tls.pem -n traefik-ingress-internal-aks-ingress-tls
 
-# Remove Azure Key Vault import certificates permissions and network access for current user
-az keyvault network-rule remove -n $KEYVAULT_NAME --ip-address "${CURRENT_IP_ADDRESS}/32"
-az role assignment delete --ids $TEMP_ROLEASSIGNMENT_TO_UPLOAD_CERT
+cat <<EOF
+
+It takes time to propagate the role assignment. Execute below in new shell session:
+
+# az keyvault certificate import --vault-name $KEYVAULT_NAME -f traefik-ingress-internal-aks-ingress-tls.pem -n traefik-ingress-internal-aks-ingress-tls
+
+After success, remove Azure Key Vault import certificates permissions and network access for current user
+
+# az keyvault network-rule remove -n $KEYVAULT_NAME --ip-address "${CURRENT_IP_ADDRESS}/32"
+# az role assignment delete --ids $TEMP_ROLEASSIGNMENT_TO_UPLOAD_CERT
+
+EOF
 
 az aks get-credentials -n ${AKS_CLUSTER_NAME} -g ${RGNAMECLUSTER} --admin --overwrite-existing
 kubectl create namespace cluster-baseline-settings
