@@ -8,6 +8,10 @@
                 "description": "The regional hub network to which this regional spoke will peer to."
             }
         },
+        "businessUnit": {
+            "defaultValue": "BU0001",
+            "type": "string"
+        },
         "location": {
             "type": "string",
             "allowedValues": [
@@ -33,7 +37,7 @@
         }
     },
     "variables": {
-        "orgAppId": "BU0001A0008",
+        "orgAppId": "[concat(parameters('businessUnit'), 'A0008')]",
         "clusterVNetName": "[concat('vnet-spoke-', variables('orgAppId'), '-00')]",
 
         "routeTableName": "[concat('route-to-', parameters('location'), '-hub-fw')]",

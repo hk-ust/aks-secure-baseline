@@ -104,6 +104,10 @@
             "defaultValue": "1.21.2",
             "type": "string"
         },
+        "businessUnit": {
+            "defaultValue": "BU0001",
+            "type": "string"
+        },
         "domainName": {
             "type": "string",
             "defaultValue": "contoso.com",
@@ -514,7 +518,7 @@
                         "name": "apw-frontend-ip-configuration",
                         "properties": {
                             "PublicIPAddress": {
-                                "id": "[resourceId(subscription().subscriptionId, variables('vNetResourceGroup'), 'Microsoft.Network/publicIpAddresses', 'pip-BU0001A0008-00')]"
+                                "id": "[resourceId(subscription().subscriptionId, variables('vNetResourceGroup'), 'Microsoft.Network/publicIpAddresses', concat('pip-', parameters('businessUnit'), 'A0008-00'))]"
                             }
                         }
                     }
@@ -1040,7 +1044,7 @@
             "name": "[variables('clusterName')]",
             "location": "[parameters('location')]",
             "tags": {
-                "Business unit": "BU0001",
+                "Business unit": "[parameters('businessUnit')]",
                 "Application identifier": "a0008"
             },
             "dependsOn": [
