@@ -64,6 +64,7 @@
                 "uksouth",
                 "westeurope",
                 "japaneast",
+                "eastasia",
                 "southeastasia"
             ],
             "metadata": {
@@ -481,7 +482,6 @@
                     "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',  'mi-appgateway-frontend')]": {}
                 }
             },
-            "zones": "[pickZones('Microsoft.Network', 'applicationGateways', parameters('location'), 3)]",
             "properties": {
                 "sku": {
                     "name": "WAF_v2",
@@ -1083,11 +1083,6 @@
                         "orchestratorVersion": "[parameters('kubernetesVersion')]",
                         "enableNodePublicIP": false,
                         "maxPods": 30,
-                        "availabilityZones": [
-                            "1",
-                            "2",
-                            "3"
-                        ],
                         "upgradeSettings": {
                             "maxSurge": "33%"
                         },
@@ -1113,11 +1108,6 @@
                         "orchestratorVersion": "[parameters('kubernetesVersion')]",
                         "enableNodePublicIP": false,
                         "maxPods": 50,
-                        "availabilityZones": [
-                            "1",
-                            "2",
-                            "3"
-                        ],
                         "upgradeSettings": {
                             "maxSurge": "33%"
                         }
@@ -1210,7 +1200,7 @@
             },
             "sku": {
                 "name": "Basic",
-                "tier": "Paid"
+                "tier": "Free"
             },
             "resources": [
                 {

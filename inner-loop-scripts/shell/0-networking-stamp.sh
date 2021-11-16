@@ -94,7 +94,7 @@ az group create --name "${RGNAMESPOKES}" --location "${LOCATION}"
 
 az deployment group  create --resource-group "${RGNAMESPOKES}" --template-file "../../networking/spoke-BU0001A0008.json" --name "spoke-0001" --parameters \
           location=$LOCATION \
-          businessUnit=BU0002 \
+          businessUnit=BU0003 \
           hubVnetResourceId=$HUB_VNET_ID 
 
 export TARGET_VNET_RESOURCE_ID=$(az deployment group show -g $RGNAMESPOKES -n spoke-0001 --query properties.outputs.clusterVnetResourceId.value -o tsv)

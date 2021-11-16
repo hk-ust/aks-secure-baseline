@@ -15,7 +15,7 @@ K8S_RBAC_AAD_PROFILE_TENANTID=$8
 
 # Used for services that support native geo-redundancy (Azure Container Registry)
 # Ideally should be the paired region of $LOCATION
-GEOREDUNDANCY_LOCATION=eastasia
+GEOREDUNDANCY_LOCATION=southeastasia
 
 APPGW_APP_URL=bicycle.contoso.com
 
@@ -48,7 +48,7 @@ AKS_INGRESS_CONTROLLER_CERTIFICATE_BASE64=$(cat traefik-ingress-internal-aks-ing
 #   and can do so by adding a `clusterAuthorizedIPRanges=['range1', 'range2', 'AzureFirewallIP/32']` parameter below.
 az deployment group create --resource-group "${RGNAMECLUSTER}" --template-file "../../cluster-stamp.json" --name "cluster-0001" --parameters \
                location=$LOCATION \
-               businessUnit=BU0002 \
+               businessUnit=BU0003 \
                geoRedundancyLocation=$GEOREDUNDANCY_LOCATION \
                targetVnetResourceId=$TARGET_VNET_RESOURCE_ID \
                clusterAdminAadGroupObjectId=$K8S_RBAC_AAD_ADMIN_GROUP_OBJECTID \
