@@ -147,13 +147,13 @@
             "properties": {
                 "securityRules": [
                     {
-                        "name": "Allow443InBound",
+                        "name": "Allow80443InBound",
                         "properties": {
-                            "description": "Allow ALL web traffic into 443. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
+                            "description": "Allow ALL web traffic into 80 & 443. (If you wanted to allow-list specific IPs, this is where you'd list them.)",
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "sourceAddressPrefix": "Internet",
-                            "destinationPortRange": "443",
+                            "destinationPortRange": "80,443",
                             "destinationAddressPrefix": "VirtualNetwork",
                             "access": "Allow",
                             "priority": 100,
@@ -255,7 +255,7 @@
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "10.26.16.0/20"
+                        "10.26.16.0/21"
                     ]
                 },
                 "subnets": [
@@ -266,6 +266,11 @@
                             "routeTable": {
                                 "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
                             },
+                            "serviceEndpoints": [
+                                {
+                                    "service": "Microsoft.Storage"
+                                }
+                            ],
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('nsg-', variables('clusterVNetName'), '-nodepools'))]"
                             },

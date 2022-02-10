@@ -48,11 +48,10 @@ AKS_INGRESS_CONTROLLER_CERTIFICATE_BASE64=$(cat traefik-ingress-internal-aks-ing
 #   and can do so by adding a `clusterAuthorizedIPRanges=['range1', 'range2', 'AzureFirewallIP/32']` parameter below.
 az deployment group create --resource-group "${RGNAMECLUSTER}" --template-file "../../cluster-stamp.json" --name "cluster-0001" --parameters \
                location=$LOCATION \
-               businessUnit=BU0003 \
                geoRedundancyLocation=$GEOREDUNDANCY_LOCATION \
                targetVnetResourceId=$TARGET_VNET_RESOURCE_ID \
                clusterAdminAadGroupObjectId=$K8S_RBAC_AAD_ADMIN_GROUP_OBJECTID \
-               a0008NamespaceReaderAadGroupObjectId=19882f96-1b53-40cf-bdec-2ace960cfe4e \
+               a0008NamespaceReaderAadGroupObjectId=5fb1456b-6325-4c22-a8b9-25acf20a6ec2 \
                k8sControlPlaneAuthorizationTenantId=$K8S_RBAC_AAD_PROFILE_TENANTID \
                appGatewayListenerCertificate=$APP_GATEWAY_LISTENER_CERTIFICATE \
                aksIngressControllerCertificate=$AKS_INGRESS_CONTROLLER_CERTIFICATE_BASE64

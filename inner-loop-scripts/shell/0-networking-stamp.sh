@@ -11,10 +11,10 @@ RGNAMECLUSTER=$4
 TENANT_ID=$5
 MAIN_SUBSCRIPTION=$6
 
-AKS_ADMIN_NAME=bu0001a000800-admin
+AKS_ADMIN_NAME=aksadminuser
 AKS_ADMIN_PASSWORD=ChangeMebu0001a0008AdminChangeMe
 
-K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME="cluster-admins-bu0001a000800"
+K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_NAME="aks-cluster-admins"
 
 __usage="
     [-c RGNAMECLUSTER]
@@ -94,7 +94,6 @@ az group create --name "${RGNAMESPOKES}" --location "${LOCATION}"
 
 az deployment group  create --resource-group "${RGNAMESPOKES}" --template-file "../../networking/spoke-BU0001A0008.json" --name "spoke-0001" --parameters \
           location=$LOCATION \
-          businessUnit=BU0003 \
           hubVnetResourceId=$HUB_VNET_ID 
 
 export TARGET_VNET_RESOURCE_ID=$(az deployment group show -g $RGNAMESPOKES -n spoke-0001 --query properties.outputs.clusterVnetResourceId.value -o tsv)

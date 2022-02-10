@@ -1068,7 +1068,7 @@
                     {
                         "name": "npsystem",
                         "count": 3,
-                        "vmSize": "Standard_D2as_v4",
+                        "vmSize": "Standard_D2s_v3",
                         "osDiskSizeGB": 50,
                         "osDiskType": "Ephemeral",
                         "osType": "Linux",
@@ -1119,6 +1119,12 @@
                 "addonProfiles": {
                     "httpApplicationRouting": {
                         "enabled": false
+                    },
+                    "ingressApplicationGateway": {
+                        "enabled": true,
+                        "config": {
+                            "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways', variables('agwName'))]"
+                        }
                     },
                     "omsagent": {
                         "enabled": true,
@@ -1972,6 +1978,22 @@
             }
         },
         {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities/providers/roleAssignments",
+            "apiVersion": "2018-09-01-preview",
+            "name": "[concat('mi-appgateway-frontend', '/Microsoft.Authorization/', guid(resourceGroup().id, 'mi-appgateway-frontend', variables('managedIdentityOperatorRole')))]",
+            "comments": "Grant the AGIC identity with Manage Identity Operator role permissions over the managed identity used in the application gateway.",
+            "dependsOn": [
+                "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'mi-appgateway-frontend')]"
+            ],
+            "properties": {
+                "roleDefinitionId": "[variables('managedIdentityOperatorRole')]",
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName')), '2020-12-01').addonProfiles.ingressApplicationGateway.identity.objectId]",
+                "principalType": "ServicePrincipal",
+                "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'mi-appgateway-frontend')]"
+            }
+        },
+        {
             "type": "Microsoft.Authorization/policyAssignments",
             "apiVersion": "2020-03-01",
             "name": "[variables('policyAssignmentNameAKSLinuxRestrictive')]",
@@ -2081,7 +2103,7 @@
                         ]
                     },
                     "effect": {
-                        "value": "deny"
+                        "value": "disabled"
                     }
                 }
             }
