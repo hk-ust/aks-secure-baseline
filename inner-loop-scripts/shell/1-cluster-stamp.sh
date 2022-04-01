@@ -51,7 +51,7 @@ az deployment group create --resource-group "${RGNAMECLUSTER}" --template-file "
                geoRedundancyLocation=$GEOREDUNDANCY_LOCATION \
                targetVnetResourceId=$TARGET_VNET_RESOURCE_ID \
                clusterAdminAadGroupObjectId=$K8S_RBAC_AAD_ADMIN_GROUP_OBJECTID \
-               a0008NamespaceReaderAadGroupObjectId=5fb1456b-6325-4c22-a8b9-25acf20a6ec2 \
+               a0008NamespaceReaderAadGroupObjectId=86735eb4-9c41-48e3-a256-4eeec9481372 \
                k8sControlPlaneAuthorizationTenantId=$K8S_RBAC_AAD_PROFILE_TENANTID \
                appGatewayListenerCertificate=$APP_GATEWAY_LISTENER_CERTIFICATE \
                aksIngressControllerCertificate=$AKS_INGRESS_CONTROLLER_CERTIFICATE_BASE64
@@ -84,7 +84,7 @@ EOF
 az aks get-credentials -n ${AKS_CLUSTER_NAME} -g ${RGNAMECLUSTER} --admin --overwrite-existing
 kubectl create namespace cluster-baseline-settings
 kubectl apply -f ../../cluster-manifests/cluster-baseline-settings/flux.yaml
-kubectl wait --namespace cluster-baseline-settings --for=condition=ready pod --selector=app.kubernetes.io/name=flux --timeout=90s
+kubectl wait --namespace cluster-baseline-settings --for=condition=ready pod --selector=app.kubernetes.io/name=flux --timeout=300s
 
 ACR_NAME=$(az deployment group show -g $RGNAMECLUSTER -n cluster-0001 --query properties.outputs.containerRegistryName.value -o tsv)
 # Import ingress controller image hosted in public container registries

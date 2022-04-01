@@ -153,7 +153,7 @@
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "sourceAddressPrefix": "Internet",
-                            "destinationPortRange": "80,443",
+                            "destinationPortRanges": ["80", "443"],
                             "destinationAddressPrefix": "VirtualNetwork",
                             "access": "Allow",
                             "priority": 100,

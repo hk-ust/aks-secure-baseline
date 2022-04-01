@@ -686,7 +686,9 @@
                                         "destinationIpGroups": [],
                                         "destinationFqdns": [],
                                         "destinationPorts": [
-                                            "443"
+                                            // https://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic#azure-global-required-network-rules
+                                            "443",
+                                            "9000"
                                         ]
                                     }
                                 ],
