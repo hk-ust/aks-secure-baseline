@@ -84,7 +84,8 @@ EOF
 az aks get-credentials -n ${AKS_CLUSTER_NAME} -g ${RGNAMECLUSTER} --admin --overwrite-existing
 kubectl create namespace cluster-baseline-settings
 kubectl apply -f ../../cluster-manifests/cluster-baseline-settings/flux.yaml
-kubectl wait --namespace cluster-baseline-settings --for=condition=ready pod --selector=app.kubernetes.io/name=flux --timeout=300s
+# wait until namespace creation
+until kubectl wait --namespace cluster-baseline-settings --for=condition=ready pod --selector=app.kubernetes.io/name=flux --timeout=90s 2>/dev/null; do sleep 5; done
 
 ACR_NAME=$(az deployment group show -g $RGNAMECLUSTER -n cluster-0001 --query properties.outputs.containerRegistryName.value -o tsv)
 # Import ingress controller image hosted in public container registries
