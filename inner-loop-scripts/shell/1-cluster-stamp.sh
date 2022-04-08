@@ -84,6 +84,8 @@ EOF
 az aks get-credentials -n ${AKS_CLUSTER_NAME} -g ${RGNAMECLUSTER} --admin --overwrite-existing
 kubectl create namespace cluster-baseline-settings
 kubectl apply -f ../../cluster-manifests/cluster-baseline-settings/flux.yaml
+# wait a few seconds for namespace creation
+sleep 5
 kubectl wait --namespace cluster-baseline-settings --for=condition=ready pod --selector=app.kubernetes.io/name=flux --timeout=300s
 
 ACR_NAME=$(az deployment group show -g $RGNAMECLUSTER -n cluster-0001 --query properties.outputs.containerRegistryName.value -o tsv)
